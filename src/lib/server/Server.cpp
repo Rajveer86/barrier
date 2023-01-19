@@ -1636,20 +1636,26 @@ void
 Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button,
 				const char* screens, bool activeScreenOnly)
 {
+    LOG((CLOG_PRINT "RAJI - Server - server handling keyDown: key %ul mask %ul button %ul", id, mask, button));
 	LOG((CLOG_DEBUG1 "onKeyDown id=%d mask=0x%04x button=0x%04x", id, mask, button));
 	assert(m_active != NULL);
 
 	// relay
 	if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(screens)) {
+        LOG((CLOG_PRINT "RAJI - Server - performing keyDown on default"));
 		m_active->keyDown(id, mask, button);
 	}
     else if (activeScreenOnly) {
         auto activeName = m_active->getName();
         if (IKeyState::KeyInfo::contains(screens, activeName)) {
+            LOG((CLOG_PRINT "RAJI - Server - performing keyDown on active screen: key %ul mask %ul button %ul", id, mask, button));
             // This won't work on the primary client if the action has the same keystroke as the condition.
             // Unlike other clients, the primary client registers the original keystroke with the OS as a hotkey to block
             // other apps from handling them, which also stops Barrier from being able to create a fake event for them.
             m_active->keyDown(id, mask, button);
+        }
+        else {
+            LOG((CLOG_PRINT "RAJI - Server - current active screen is not part of keybind - skipping"));
         }
     }
 	else {
@@ -1672,20 +1678,26 @@ void
 Server::onKeyUp(KeyID id, KeyModifierMask mask, KeyButton button,
 				const char* screens, bool activeScreenOnly)
 {
+    LOG((CLOG_PRINT "RAJI - Server - server handling keyUp: key %ul mask %ul button %ul", id, mask, button));
 	LOG((CLOG_DEBUG1 "onKeyUp id=%d mask=0x%04x button=0x%04x", id, mask, button));
 	assert(m_active != NULL);
 
 	// relay
 	if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(screens)) {
+        LOG((CLOG_PRINT "RAJI - Server - performing keyUp on default"));
 		m_active->keyUp(id, mask, button);
 	}
     else if (activeScreenOnly) {
         auto activeName = m_active->getName();
         if (IKeyState::KeyInfo::contains(screens, activeName)) {
+            LOG((CLOG_PRINT "RAJI - Server - performing keyUp on active screen: key %ul mask %ul button %ul", id, mask, button));
             // This won't work on the primary client if the action has the same keystroke as the condition.
             // Unlike other clients, the primary client registers the original keystroke with the OS as a hotkey to block
             // other apps from handling them, which also stops Barrier from being able to create a fake event for them.
             m_active->keyUp(id, mask, button);
+        }
+        else {
+            LOG((CLOG_PRINT "RAJI - Server - current active screen is not part of keybind - skipping"));
         }
     }
 	else {

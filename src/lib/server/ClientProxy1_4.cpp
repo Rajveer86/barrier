@@ -45,6 +45,7 @@ ClientProxy1_4::~ClientProxy1_4()
 void
 ClientProxy1_4::keyDown(KeyID key, KeyModifierMask mask, KeyButton button)
 {
+    LOG((CLOG_PRINT "RAJI - ClientProxy1_4 - key down: key %ul mask %ul button %ul", key, mask, button));
     ClientProxy1_3::keyDown(key, mask, button);
 }
 
@@ -57,6 +58,7 @@ ClientProxy1_4::keyRepeat(KeyID key, KeyModifierMask mask, SInt32 count, KeyButt
 void
 ClientProxy1_4::keyUp(KeyID key, KeyModifierMask mask, KeyButton button)
 {
+    LOG((CLOG_PRINT "RAJI - ClientProxy1_4 - key up: key %ul mask %ul button %ul", key, mask, button));
     ClientProxy1_3::keyUp(key, mask, button);
 }
 

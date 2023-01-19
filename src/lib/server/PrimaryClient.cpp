@@ -187,6 +187,7 @@ void
 PrimaryClient::keyDown(KeyID key, KeyModifierMask mask, KeyButton button)
 {
     if (m_fakeInputCount > 0) {
+        LOG((CLOG_PRINT "RAJI - PrimaryClient - key down: key %ul mask %ul button %ul", key, mask, button));
         m_screen->keyDown(key, mask, button);
     }
 }
@@ -201,6 +202,7 @@ void
 PrimaryClient::keyUp(KeyID key, KeyModifierMask mask, KeyButton button)
 {
     if (m_fakeInputCount > 0) {
+        LOG((CLOG_PRINT "RAJI - PrimaryClient - key up: key %ul mask %ul button %ul", key, mask, button));
         m_screen->keyUp(key, mask, button);
     }
 }

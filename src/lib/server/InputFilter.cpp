@@ -127,6 +127,8 @@ InputFilter::KeystrokeCondition::match(const Event& event)
         return kNoMatch;
     }
 
+    LOG((CLOG_PRINT "RAJI - InputFilter - input filter matched a keystroke condition for hotkey: key %u mask %u", m_key, m_mask));
+
     return status;
 }
 
@@ -571,6 +573,8 @@ InputFilter::KeystrokeAction::perform(const Event& event)
     Event::Type type = m_press ?
         m_events->forIKeyState().keyDown() :
         m_events->forIKeyState().keyUp();
+
+    LOG((CLOG_PRINT "RAJI - InputFilter - creating fake keystroke action key down %ul mask %ul button %ul", m_keyInfo->m_key, m_keyInfo->m_mask, m_keyInfo->m_button));
 
     m_events->addEvent(Event(m_events->forIPrimaryScreen().fakeInputBegin(),
                                 event.getTarget(), NULL,
@@ -1094,10 +1098,15 @@ InputFilter::handleEvent(const Event& event, void*)
                              rule != m_ruleList.end(); ++rule) {
         if (rule->handleEvent(myEvent)) {
             // handled
+            LOG((CLOG_PRINT "RAJI - InputFilter - input filter rule handled event: type %u\n", event.getType()));
             return;
         }
     }
 
     // not handled so pass through
+    IPlatformScreen::KeyInfo* eventKeyInfo =
+        static_cast<IPlatformScreen::KeyInfo*>(myEvent.getData());
+    LOG((CLOG_PRINT "RAJI - InputFilter - input filter did not match event, passing through: type %u, key down %ul mask %ul button %ul", event.getType(), eventKeyInfo->m_key, eventKeyInfo->m_mask, eventKeyInfo->m_button));
     m_events->addEvent(myEvent);
+    LOG((CLOG_PRINT "RAJI - InputFilter - input filter rule passed event through: type %u\n", event.getType()));
 }

@@ -757,6 +757,7 @@ MSWindowsKeyState::sendKeyEvent(void* target,
 	if (press || isAutoRepeat) {
 		// send key
 		if (press && !isAutoRepeat) {
+            LOG((CLOG_PRINT "RAJI - MSWindowsKeyState - key down %ul mask %ul button %ul", key, mask, button));
 			KeyState::sendKeyEvent(target, true, false,
 							key, mask, 1, button);
 			if (count > 0) {
@@ -764,12 +765,14 @@ MSWindowsKeyState::sendKeyEvent(void* target,
 			}
 		}
 		if (count >= 1) {
+            LOG((CLOG_PRINT "RAJI - MSWindowsKeyState - key down again %ul mask %ul button %ul", key, mask, button));
 			KeyState::sendKeyEvent(target, true, true,
 							key, mask, count, button);
 		}
 	}
 	else {
 		// do key up
+        LOG((CLOG_PRINT "RAJI - MSWindowsKeyState - key up %ul mask %ul button %ul", key, mask, button));
 		KeyState::sendKeyEvent(target, false, false, key, mask, 1, button);
 	}
 }

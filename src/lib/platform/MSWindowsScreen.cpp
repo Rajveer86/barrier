@@ -1204,6 +1204,7 @@ MSWindowsScreen::onKey(WPARAM wParam, LPARAM lParam)
         button    = static_cast<KeyButton>((lParam & 0x01ff0000u) >> 16);
         if (key != kKeyNone) {
             // do it
+            LOG((CLOG_PRINT "RAJI - MSWindowsScreen - key %s %ul mask %ul button %ul", (((lParam & 0x80000000u) == 0) ? "down" : "up"), key, mask, button));
             m_keyState->sendKeyEvent(getEventTarget(),
                             ((lParam & 0x80000000u) == 0),
                             ((lParam & 0x40000000u) != 0),
@@ -1251,9 +1252,11 @@ MSWindowsScreen::onHotKey(WPARAM wParam, LPARAM lParam)
             // ignore key repeats but it counts as a hot key
             return true;
         }
+        LOG((CLOG_PRINT "RAJI - MSWindowsScreen - hotkey down %ul mask %ul", virtKey, modifiers));
         type = m_events->forIPrimaryScreen().hotKeyDown();
     }
     else {
+        LOG((CLOG_PRINT "RAJI - MSWindowsScreen - hotkey up %ul mask %ul", virtKey, modifiers));
         type = m_events->forIPrimaryScreen().hotKeyUp();
     }
 

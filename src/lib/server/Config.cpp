@@ -23,6 +23,7 @@
 #include "barrier/key_types.h"
 #include "net/XSocket.h"
 #include "base/IEventQueue.h"
+#include "base/Log.h"
 #include "common/stdistream.h"
 #include "common/stdostream.h"
 
@@ -1304,10 +1305,12 @@ void Config::parseKeystrokeConditionOptions(ConfigReadContext& c, const std::str
 {
     if (s == "disableGlobalHotkeyRegister")
     {
+        LOG((CLOG_PRINT "RAJI - Config - parsed keystroke condition option with disableGlobalHotkeyRegister = true"));
         disableGlobalHotkeyRegister = true;
     }
     else
     {
+        LOG((CLOG_PRINT "RAJI - Config - parsed keystroke condition option with disableGlobalHotkeyRegister = false"));
         disableGlobalHotkeyRegister = false;
     }
 }
@@ -1317,10 +1320,12 @@ void Config::parseKeystrokeActionOptions(ConfigReadContext& c, const std::string
 {
     if (s == "activeScreenOnly")
     {
+        LOG((CLOG_PRINT "RAJI - Config - parsed keystroke action option with activeScreenOnly = true"));
         activeScreenOnly = true;
     }
     else
     {
+        LOG((CLOG_PRINT "RAJI - Config - parsed keystroke action option with activeScreenOnly = false"));
         activeScreenOnly = false;
     }
 }

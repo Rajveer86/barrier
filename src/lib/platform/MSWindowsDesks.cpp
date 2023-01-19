@@ -257,6 +257,7 @@ MSWindowsDesks::fakeKeyEvent(
     if (!press) {
         flags |= KEYEVENTF_KEYUP;
     }
+    LOG((CLOG_PRINT "RAJI - MSWindowsDesks - fakeKeyEvent button %ul virtualKey %ul", button, virtualKey));
     sendMessage(BARRIER_MSG_FAKE_KEY, flags,
                             MAKEWORD(static_cast<BYTE>(button & 0xffu),
                                 static_cast<BYTE>(virtualKey & 0xffu)));
@@ -665,6 +666,7 @@ void MSWindowsDesks::desk_thread(Desk* desk)
             break;
 
         case BARRIER_MSG_FAKE_KEY:
+            LOG((CLOG_PRINT "RAJI - MSWindowsDesks - desk_thread received BARRIER_MSG_FAKE_KEY"));
             keybd_event(HIBYTE(msg.lParam), LOBYTE(msg.lParam), (DWORD)msg.wParam, 0);
             break;
 
