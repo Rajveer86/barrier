@@ -55,13 +55,13 @@ public:
     Registers a system-wide hotkey for key \p key with modifiers \p mask.
     Returns an id used to unregister the hotkey.
     */
-    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask);
+    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey);
 
     //! Unregister a system hotkey
     /*!
     Unregisters a previously registered hot key.
     */
-    virtual void        unregisterHotKey(UInt32 id);
+    virtual void        unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey);
 
     //! Prepare to synthesize input on primary screen
     /*!

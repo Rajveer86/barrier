@@ -57,8 +57,8 @@ public:
     // KeystrokeCondition
     class KeystrokeCondition : public Condition {
     public:
-        KeystrokeCondition(IEventQueue* events, IPlatformScreen::KeyInfo*);
-        KeystrokeCondition(IEventQueue* events, KeyID key, KeyModifierMask mask);
+        KeystrokeCondition(IEventQueue* events, IPlatformScreen::KeyInfo*, bool disableGlobalHotkeyRegister);
+        KeystrokeCondition(IEventQueue* events, KeyID key, KeyModifierMask mask, bool disableGlobalHotkeyRegister);
         virtual ~KeystrokeCondition();
 
         KeyID                    getKey() const;
@@ -76,6 +76,7 @@ public:
         KeyID                    m_key;
         KeyModifierMask            m_mask;
         IEventQueue*            m_events;
+        bool                      m_disableGlobalHotkeyRegister;
     };
 
     // MouseButtonCondition

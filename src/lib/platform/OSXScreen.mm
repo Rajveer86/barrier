@@ -315,7 +315,7 @@ OSXScreen::getCursorCenter(SInt32& x, SInt32& y) const
 }
 
 UInt32
-OSXScreen::registerHotKey(KeyID key, KeyModifierMask mask)
+OSXScreen::registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey)
 {
 	// get mac virtual key and modifier mask matching barrier key and mask
 	UInt32 macKey, macMask;
@@ -348,11 +348,13 @@ OSXScreen::registerHotKey(KeyID key, KeyModifierMask mask)
 		}
 	}
 	else {
-		EventHotKeyID hkid = { 'SNRG', (UInt32)id };
-		OSStatus status = RegisterEventHotKey(macKey, macMask, hkid,
-								GetApplicationEventTarget(), 0,
-								&ref);
-		okay = (status == noErr);
+        if (registerGlobalHotkey) {
+		    EventHotKeyID hkid = { 'SNRG', (UInt32)id };
+		    OSStatus status = RegisterEventHotKey(macKey, macMask, hkid,
+								    GetApplicationEventTarget(), 0,
+								    &ref);
+		    okay = (status == noErr);
+        }
 		m_hotKeyToIDMap[HotKeyItem(macKey, macMask)] = id;
 	}
 
@@ -370,7 +372,7 @@ OSXScreen::registerHotKey(KeyID key, KeyModifierMask mask)
 }
 
 void
-OSXScreen::unregisterHotKey(UInt32 id)
+OSXScreen::unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey)
 {
 	// look up hotkey
 	HotKeyMap::iterator i = m_hotKeys.find(id);
@@ -380,7 +382,7 @@ OSXScreen::unregisterHotKey(UInt32 id)
 
 	// unregister with OS
 	bool okay;
-	if (i->second.getRef() != NULL) {
+	if (unregisterGlobalHotkey && i->second.getRef() != NULL) {
 		okay = (UnregisterEventHotKey(i->second.getRef()) == noErr);
 	}
 	else {

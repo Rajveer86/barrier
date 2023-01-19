@@ -53,21 +53,23 @@ InputFilter::Condition::disablePrimary(PrimaryClient*)
 }
 
 InputFilter::KeystrokeCondition::KeystrokeCondition(
-        IEventQueue* events, IPlatformScreen::KeyInfo* info) :
+        IEventQueue* events, IPlatformScreen::KeyInfo* info, bool disableGlobalHotkeyRegister) :
     m_id(0),
     m_key(info->m_key),
     m_mask(info->m_mask),
-    m_events(events)
+    m_events(events),
+    m_disableGlobalHotkeyRegister(disableGlobalHotkeyRegister)
 {
     free(info);
 }
 
 InputFilter::KeystrokeCondition::KeystrokeCondition(
-        IEventQueue* events, KeyID key, KeyModifierMask mask) :
+        IEventQueue* events, KeyID key, KeyModifierMask mask, bool disableGlobalHotkeyRegister) :
     m_id(0),
     m_key(key),
     m_mask(mask),
-    m_events(events)
+    m_events(events),
+    m_disableGlobalHotkeyRegister(disableGlobalHotkeyRegister)
 {
     // do nothing
 }
@@ -92,7 +94,7 @@ InputFilter::KeystrokeCondition::getMask() const
 InputFilter::Condition*
 InputFilter::KeystrokeCondition::clone() const
 {
-    return new KeystrokeCondition(m_events, m_key, m_mask);
+    return new KeystrokeCondition(m_events, m_key, m_mask, m_disableGlobalHotkeyRegister);
 }
 
 std::string InputFilter::KeystrokeCondition::format() const
@@ -131,13 +133,13 @@ InputFilter::KeystrokeCondition::match(const Event& event)
 void
 InputFilter::KeystrokeCondition::enablePrimary(PrimaryClient* primary)
 {
-    m_id = primary->registerHotKey(m_key, m_mask);
+    m_id = primary->registerHotKey(m_key, m_mask, !m_disableGlobalHotkeyRegister);
 }
 
 void
 InputFilter::KeystrokeCondition::disablePrimary(PrimaryClient* primary)
 {
-    primary->unregisterHotKey(m_id);
+    primary->unregisterHotKey(m_id, !m_disableGlobalHotkeyRegister);
     m_id = 0;
 }
 

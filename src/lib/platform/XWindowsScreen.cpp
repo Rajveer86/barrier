@@ -524,7 +524,7 @@ XWindowsScreen::warpCursor(SInt32 x, SInt32 y)
 }
 
 UInt32
-XWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask)
+XWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey)
 {
 	// only allow certain modifiers
 	if ((mask & ~(KeyModifierShift | KeyModifierControl |
@@ -642,8 +642,10 @@ XWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask)
 				for (int k = 0; k < modKeymap->max_keypermod && !err; ++k) {
 					KeyCode code = modifiermap[k];
 					if (modifiermap[k] != 0) {
-                        m_impl->XGrabKey(m_display, code, modifiers2, m_root,
-									False, GrabModeAsync, GrabModeAsync);
+                        if (registerGlobalHotkey) {
+                            m_impl->XGrabKey(m_display, code, modifiers2, m_root,
+									    False, GrabModeAsync, GrabModeAsync);
+                        }
 						if (!err) {
 							hotKeys.push_back(std::make_pair(code, modifiers2));
 							m_hotKeyToIDMap[HotKeyItem(code, modifiers2)] = id;
@@ -689,8 +691,10 @@ XWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask)
 					}
 
 					// add grab
-                    m_impl->XGrabKey(m_display, *j, tmpModifiers, m_root,
-										False, GrabModeAsync, GrabModeAsync);
+                    if (registerGlobalHotkey) {
+                        m_impl->XGrabKey(m_display, *j, tmpModifiers, m_root,
+										    False, GrabModeAsync, GrabModeAsync);
+                    }
 					if (!err) {
 						hotKeys.push_back(std::make_pair(*j, tmpModifiers));
 						m_hotKeyToIDMap[HotKeyItem(*j, tmpModifiers)] = id;
@@ -719,7 +723,7 @@ XWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask)
 }
 
 void
-XWindowsScreen::unregisterHotKey(UInt32 id)
+XWindowsScreen::unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey)
 {
 	// look up hotkey
 	HotKeyMap::iterator i = m_hotKeys.find(id);
@@ -734,7 +738,9 @@ XWindowsScreen::unregisterHotKey(UInt32 id)
 		HotKeyList& hotKeys = i->second;
 		for (HotKeyList::iterator j = hotKeys.begin();
 								j != hotKeys.end(); ++j) {
-            m_impl->XUngrabKey(m_display, j->first, j->second, m_root);
+            if (unregisterGlobalHotkey) {
+                m_impl->XUngrabKey(m_display, j->first, j->second, m_root);
+            }
 			m_hotKeyToIDMap.erase(HotKeyItem(j->first, j->second));
 		}
 	}

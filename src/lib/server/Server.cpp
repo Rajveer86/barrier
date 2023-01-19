@@ -293,7 +293,7 @@ Server::setConfig(const Config& config)
 	if (!m_config->hasLockToScreenAction()) {
 		IPlatformScreen::KeyInfo* key =
 			IPlatformScreen::KeyInfo::alloc(kKeyScrollLock, 0, 0, 0);
-		InputFilter::Rule rule(new InputFilter::KeystrokeCondition(m_events, key));
+		InputFilter::Rule rule(new InputFilter::KeystrokeCondition(m_events, key, true));
 		rule.adoptAction(new InputFilter::LockCursorToScreenAction(m_events), true);
 		m_inputFilter->addFilterRule(rule);
 	}

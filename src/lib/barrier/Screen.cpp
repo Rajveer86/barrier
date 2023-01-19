@@ -330,15 +330,15 @@ Screen::setSequenceNumber(UInt32 seqNum)
 }
 
 UInt32
-Screen::registerHotKey(KeyID key, KeyModifierMask mask)
+Screen::registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey)
 {
-    return m_screen->registerHotKey(key, mask);
+    return m_screen->registerHotKey(key, mask, registerGlobalHotkey);
 }
 
 void
-Screen::unregisterHotKey(UInt32 id)
+Screen::unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey)
 {
-    m_screen->unregisterHotKey(id);
+    m_screen->unregisterHotKey(id, unregisterGlobalHotkey);
 }
 
 void

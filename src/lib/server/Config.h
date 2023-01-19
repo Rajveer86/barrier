@@ -453,6 +453,7 @@ private:
 
     void parseScreens(ConfigReadContext&, const std::string&, std::set<std::string>& screens) const;
 
+    void parseKeystrokeConditionOptions(ConfigReadContext& c, const std::string& s, bool& activeScreenOnly) const;
     void parseKeystrokeActionOptions(ConfigReadContext& c, const std::string& s, bool& activeScreenOnly) const;
 
     static const char*    getOptionName(OptionID);

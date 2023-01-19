@@ -53,8 +53,8 @@ public:
     // IPrimaryScreen overrides
     virtual void        reconfigure(UInt32 activeSides);
     virtual void        warpCursor(SInt32 x, SInt32 y);
-    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask);
-    virtual void        unregisterHotKey(UInt32 id);
+    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey);
+    virtual void        unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey);
     virtual void        fakeInputBegin();
     virtual void        fakeInputEnd();
     virtual SInt32        getJumpZoneSize() const;

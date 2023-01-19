@@ -111,13 +111,13 @@ public:
     the modifiers in any order or to require the user to press the given key
     last.
     */
-    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask) = 0;
+    virtual UInt32        registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHotkey) = 0;
 
     //! Unregister a system hotkey
     /*!
     Unregisters a previously registered hot key.
     */
-    virtual void        unregisterHotKey(UInt32 id) = 0;
+    virtual void        unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey) = 0;
 
     //! Prepare to synthesize input on primary screen
     /*!

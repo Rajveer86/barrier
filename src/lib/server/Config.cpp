@@ -1029,13 +1029,19 @@ InputFilter::Condition* Config::parseCondition(ConfigReadContext& s, const std::
                                                const std::vector<std::string>& args)
 {
 	if (name == "keystroke") {
-		if (args.size() != 1) {
-			throw XConfigRead(s, "syntax for condition: keystroke(modifiers+key)");
+		if (args.size() < 1 || args.size() > 2) {
+			throw XConfigRead(s, "syntax for condition: keystroke(modifiers+key[,options])");
 		}
 
 		IPlatformScreen::KeyInfo* keyInfo = s.parseKeystroke(args[0]);
+        bool disableGlobalHotkeyRegister = false;
 
-		return new InputFilter::KeystrokeCondition(m_events, keyInfo);
+        if (args.size() > 1)
+        {
+            parseKeystrokeConditionOptions(s, args[1], disableGlobalHotkeyRegister);
+        }
+
+		return new InputFilter::KeystrokeCondition(m_events, keyInfo, disableGlobalHotkeyRegister);
 	}
 
 	if (name == "mousebutton") {
@@ -1291,6 +1297,19 @@ void Config::parseScreens(ConfigReadContext& c, const std::string& s,
 		// next
 		i = j + 1;
 	}
+}
+
+void Config::parseKeystrokeConditionOptions(ConfigReadContext& c, const std::string& s,
+                                            bool& disableGlobalHotkeyRegister) const
+{
+    if (s == "disableGlobalHotkeyRegister")
+    {
+        disableGlobalHotkeyRegister = true;
+    }
+    else
+    {
+        disableGlobalHotkeyRegister = false;
+    }
 }
 
 void Config::parseKeystrokeActionOptions(ConfigReadContext& c, const std::string& s,
