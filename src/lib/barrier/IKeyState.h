@@ -44,7 +44,7 @@ public:
     public:
         static KeyInfo* alloc(KeyID, KeyModifierMask, KeyButton, SInt32 count);
         static KeyInfo* alloc(KeyID, KeyModifierMask, KeyButton, SInt32 count,
-                            const std::set<String>& destinations);
+                            const std::set<String>& destinations, bool activeScreenOnly);
         static KeyInfo* alloc(const KeyInfo&);
 
         static bool isDefault(const char* screens);
@@ -58,6 +58,7 @@ public:
         KeyModifierMask    m_mask;
         KeyButton        m_button;
         SInt32            m_count;
+        bool            m_activeScreenOnly;
         char*            m_screens;
         char            m_screensBuffer[1];
     };

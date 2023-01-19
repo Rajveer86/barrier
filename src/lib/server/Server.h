@@ -322,9 +322,9 @@ private:
                             ClipboardID id, UInt32 seqNum);
     void                onScreensaver(bool activated);
     void                onKeyDown(KeyID, KeyModifierMask, KeyButton,
-                            const char* screens);
+                            const char* screens, bool activeScreenOnly);
     void                onKeyUp(KeyID, KeyModifierMask, KeyButton,
-                            const char* screens);
+                            const char* screens, bool activeScreenOnly);
     void                onKeyRepeat(KeyID, KeyModifierMask, SInt32, KeyButton);
     void                onMouseDown(ButtonID);
     void                onMouseUp(ButtonID);

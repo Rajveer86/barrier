@@ -187,11 +187,7 @@ void
 PrimaryClient::keyDown(KeyID key, KeyModifierMask mask, KeyButton button)
 {
     if (m_fakeInputCount > 0) {
-// XXX -- don't forward keystrokes to primary screen for now
-        (void)key;
-        (void)mask;
-        (void)button;
-//        m_screen->keyDown(key, mask, button);
+        m_screen->keyDown(key, mask, button);
     }
 }
 
@@ -205,11 +201,7 @@ void
 PrimaryClient::keyUp(KeyID key, KeyModifierMask mask, KeyButton button)
 {
     if (m_fakeInputCount > 0) {
-// XXX -- don't forward keystrokes to primary screen for now
-        (void)key;
-        (void)mask;
-        (void)button;
-//        m_screen->keyUp(key, mask, button);
+        m_screen->keyUp(key, mask, button);
     }
 }
 

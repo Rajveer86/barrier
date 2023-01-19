@@ -1074,8 +1074,8 @@ void Config::parseAction(ConfigReadContext& s, const std::string& name,
 	InputFilter::Action* action;
 
 	if (name == "keystroke" || name == "keyDown" || name == "keyUp") {
-		if (args.size() < 1 || args.size() > 2) {
-			throw XConfigRead(s, "syntax for action: keystroke(modifiers+key[,screens])");
+		if (args.size() < 1 || args.size() > 3) {
+			throw XConfigRead(s, "syntax for action: keystroke(modifiers+key[,screens[,options]])");
 		}
 
 		IPlatformScreen::KeyInfo* keyInfo;
@@ -1085,7 +1085,12 @@ void Config::parseAction(ConfigReadContext& s, const std::string& name,
 		else {
             std::set<std::string> screens;
 			parseScreens(s, args[1], screens);
-			keyInfo = s.parseKeystroke(args[0], screens);
+            bool activeScreenOnly = false;
+            if (args.size() > 2)
+            {
+                parseKeystrokeActionOptions(s, args[2], activeScreenOnly);
+            }
+			keyInfo = s.parseKeystroke(args[0], screens, activeScreenOnly);
 		}
 
 		if (name == "keystroke") {
@@ -1286,6 +1291,19 @@ void Config::parseScreens(ConfigReadContext& c, const std::string& s,
 		// next
 		i = j + 1;
 	}
+}
+
+void Config::parseKeystrokeActionOptions(ConfigReadContext& c, const std::string& s,
+                                         bool& activeScreenOnly) const
+{
+    if (s == "activeScreenOnly")
+    {
+        activeScreenOnly = true;
+    }
+    else
+    {
+        activeScreenOnly = false;
+    }
 }
 
 const char*
@@ -2185,6 +2203,13 @@ IPlatformScreen::KeyInfo* ConfigReadContext::parseKeystroke(const std::string& k
 IPlatformScreen::KeyInfo* ConfigReadContext::parseKeystroke(const std::string& keystroke,
                                                             const std::set<std::string>& screens) const
 {
+    return parseKeystroke(keystroke, screens, false);
+}
+
+IPlatformScreen::KeyInfo* ConfigReadContext::parseKeystroke(const std::string& keystroke,
+                                                            const std::set<std::string>& screens,
+                                                            const bool& activeScreenOnly) const
+{
     std::string s = keystroke;
 
 	KeyModifierMask mask;
@@ -2201,7 +2226,7 @@ IPlatformScreen::KeyInfo* ConfigReadContext::parseKeystroke(const std::string& k
 		throw XConfigRead(*this, "missing key and/or modifiers in keystroke");
 	}
 
-	return IPlatformScreen::KeyInfo::alloc(key, mask, 0, 0, screens);
+	return IPlatformScreen::KeyInfo::alloc(key, mask, 0, 0, screens, activeScreenOnly);
 }
 
 IPlatformScreen::ButtonInfo*

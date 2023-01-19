@@ -1285,7 +1285,9 @@ Server::handleKeyDownEvent(const Event& event, void*)
 {
 	IPlatformScreen::KeyInfo* info =
 		static_cast<IPlatformScreen::KeyInfo*>(event.getData());
-	onKeyDown(info->m_key, info->m_mask, info->m_button, info->m_screens);
+	onKeyDown(info->m_key, info->m_mask, info->m_button,
+        info->m_screens,
+        info->m_activeScreenOnly);
 }
 
 void
@@ -1293,7 +1295,9 @@ Server::handleKeyUpEvent(const Event& event, void*)
 {
 	IPlatformScreen::KeyInfo* info =
 		 static_cast<IPlatformScreen::KeyInfo*>(event.getData());
-	onKeyUp(info->m_key, info->m_mask, info->m_button, info->m_screens);
+	onKeyUp(info->m_key, info->m_mask, info->m_button,
+        info->m_screens,
+        info->m_activeScreenOnly);
 }
 
 void
@@ -1630,7 +1634,7 @@ Server::onScreensaver(bool activated)
 
 void
 Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button,
-				const char* screens)
+				const char* screens, bool activeScreenOnly)
 {
 	LOG((CLOG_DEBUG1 "onKeyDown id=%d mask=0x%04x button=0x%04x", id, mask, button));
 	assert(m_active != NULL);
@@ -1639,6 +1643,15 @@ Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button,
 	if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(screens)) {
 		m_active->keyDown(id, mask, button);
 	}
+    else if (activeScreenOnly) {
+        auto activeName = m_active->getName();
+        if (IKeyState::KeyInfo::contains(screens, activeName)) {
+            // This won't work on the primary client if the action has the same keystroke as the condition.
+            // Unlike other clients, the primary client registers the original keystroke with the OS as a hotkey to block
+            // other apps from handling them, which also stops Barrier from being able to create a fake event for them.
+            m_active->keyDown(id, mask, button);
+        }
+    }
 	else {
 		if (!screens && m_keyboardBroadcasting) {
 			screens = m_keyboardBroadcastingScreens.c_str();
@@ -1657,7 +1670,7 @@ Server::onKeyDown(KeyID id, KeyModifierMask mask, KeyButton button,
 
 void
 Server::onKeyUp(KeyID id, KeyModifierMask mask, KeyButton button,
-				const char* screens)
+				const char* screens, bool activeScreenOnly)
 {
 	LOG((CLOG_DEBUG1 "onKeyUp id=%d mask=0x%04x button=0x%04x", id, mask, button));
 	assert(m_active != NULL);
@@ -1666,6 +1679,15 @@ Server::onKeyUp(KeyID id, KeyModifierMask mask, KeyButton button,
 	if (!m_keyboardBroadcasting && IKeyState::KeyInfo::isDefault(screens)) {
 		m_active->keyUp(id, mask, button);
 	}
+    else if (activeScreenOnly) {
+        auto activeName = m_active->getName();
+        if (IKeyState::KeyInfo::contains(screens, activeName)) {
+            // This won't work on the primary client if the action has the same keystroke as the condition.
+            // Unlike other clients, the primary client registers the original keystroke with the OS as a hotkey to block
+            // other apps from handling them, which also stops Barrier from being able to create a fake event for them.
+            m_active->keyUp(id, mask, button);
+        }
+    }
 	else {
 		if (!screens && m_keyboardBroadcasting) {
 			screens = m_keyboardBroadcastingScreens.c_str();

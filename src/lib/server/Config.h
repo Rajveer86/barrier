@@ -453,6 +453,8 @@ private:
 
     void parseScreens(ConfigReadContext&, const std::string&, std::set<std::string>& screens) const;
 
+    void parseKeystrokeActionOptions(ConfigReadContext& c, const std::string& s, bool& activeScreenOnly) const;
+
     static const char*    getOptionName(OptionID);
     static std::string getOptionValue(OptionID, OptionValue);
 
@@ -497,6 +499,9 @@ public:
     IPlatformScreen::KeyInfo* parseKeystroke(const std::string& keystroke) const;
     IPlatformScreen::KeyInfo* parseKeystroke(const std::string& keystroke,
                                              const std::set<std::string>& screens) const;
+    IPlatformScreen::KeyInfo* parseKeystroke(const std::string& keystroke,
+                                             const std::set<std::string>& screens,
+                                             const bool& activeScreenOnly) const;
     IPlatformScreen::ButtonInfo* parseMouse(const std::string& mouse) const;
     KeyModifierMask parseModifier(const std::string& modifiers) const;
 
