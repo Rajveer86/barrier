@@ -336,7 +336,7 @@ OSXScreen::registerHotKey(KeyID key, KeyModifierMask mask, bool registerGlobalHo
 
 	// if this hot key has modifiers only then we'll handle it specially
 	EventHotKeyRef ref = NULL;
-	bool okay;
+	bool okay = true;
 	if (key == kKeyNone) {
 		if (m_modifierHotKeys.count(mask) > 0) {
 			// already registered
@@ -381,9 +381,11 @@ OSXScreen::unregisterHotKey(UInt32 id, bool unregisterGlobalHotkey)
 	}
 
 	// unregister with OS
-	bool okay;
-	if (unregisterGlobalHotkey && i->second.getRef() != NULL) {
-		okay = (UnregisterEventHotKey(i->second.getRef()) == noErr);
+	bool okay = true;
+	if (i->second.getRef() != NULL) {
+        if (unregisterGlobalHotkey) {
+            okay = (UnregisterEventHotKey(i->second.getRef()) == noErr);
+        }
 	}
 	else {
 		okay = false;
